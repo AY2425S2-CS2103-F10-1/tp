@@ -20,7 +20,6 @@ class JsonAdaptedTag {
      * @param tagName name of the tag
      * @param tagType type of the tag
      */
-    @JsonCreator
     JsonAdaptedTag(String tagName, String tagType) {
         this.tagName = tagName;
         this.tagType = tagType;
@@ -37,6 +36,12 @@ class JsonAdaptedTag {
         } else {
             tagType = "TAG";
         }
+    }
+
+    @JsonCreator
+    public JsonAdaptedTag(String tagName) {
+        this.tagName = tagName;
+        this.tagType = "TAG";
     }
 
     @JsonValue
@@ -58,7 +63,7 @@ class JsonAdaptedTag {
             throw new IllegalValueException(Tag.MESSAGE_CONSTRAINTS);
         }
 
-        if ("PROJ".equals(tagType)) {
+        if (tagType.equals("PROJ")) {
             return new Project(tagName);
         }
 
