@@ -49,10 +49,6 @@ class JsonAdaptedTag {
         return tagName;
     }
 
-    public String getTagType() {
-        return tagType;
-    }
-
     /**
      * Converts this Jackson-friendly adapted tag object into the model's {@code Tag} object.
      *
