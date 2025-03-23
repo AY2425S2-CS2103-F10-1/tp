@@ -27,18 +27,29 @@ class JsonAdaptedPerson {
     private final String phone;
     private final String email;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
+    private final List<JsonAdaptedTag> projects = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
     @JsonCreator
-    public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-            @JsonProperty("email") String email, @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+    public JsonAdaptedPerson(@JsonProperty("name") String name,
+                             @JsonProperty("phone") String phone,
+                             @JsonProperty("email") String email,
+                             @JsonProperty("tags") List<JsonAdaptedTag> tags,
+                             @JsonProperty("projects") List<String> projects) {
         this.name = name;
         this.phone = phone;
         this.email = email;
+
         if (tags != null) {
             this.tags.addAll(tags);
+        }
+
+        if (projects != null) {
+            for (String project : projects) {
+                this.projects.add(new JsonAdaptedTag(project, "PROJ"));
+            }
         }
     }
 
@@ -49,7 +60,12 @@ class JsonAdaptedPerson {
         name = source.getName().fullName;
         phone = source.getPhone().value;
         email = source.getEmail().map(email -> email.value).orElse("");
+
         tags.addAll(source.getTags().stream()
+                .map(JsonAdaptedTag::new)
+                .toList());
+
+        projects.addAll(source.getProjects().stream()
                 .map(JsonAdaptedTag::new)
                 .toList());
     }
@@ -61,9 +77,20 @@ class JsonAdaptedPerson {
      */
     public Person toModelType() throws IllegalValueException {
         final List<Tag> personTags = new ArrayList<>();
+        final List<Tag> personProjectTags = new ArrayList<>();
+
         for (JsonAdaptedTag tag : tags) {
             personTags.add(tag.toModelType());
         }
+
+        for (JsonAdaptedTag project : projects) {
+            personProjectTags.add(project.toModelType());
+        }
+
+        final Set<Tag> modelTags = new LinkedHashSet<>();
+
+        modelTags.addAll(personTags);
+        modelTags.addAll(personProjectTags);
 
         if (name == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Name.class.getSimpleName()));
@@ -96,7 +123,6 @@ class JsonAdaptedPerson {
             modelEmail = Optional.of(new Email(email));
         }
 
-        final Set<Tag> modelTags = new LinkedHashSet<>(personTags);
         return new Person(modelName, modelPhone, modelEmail, modelTags);
     }
 
