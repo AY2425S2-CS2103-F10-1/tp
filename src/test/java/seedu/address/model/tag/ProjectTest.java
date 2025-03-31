@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +18,7 @@ public class ProjectTest {
     @BeforeEach
     public void setUp() {
         validProject = new Project("valid_project", "complete", "paid", "01 apr 2025 2359");
-        validProjectTwo = new Project("valid_project_two");
+        validProjectTwo = new Project("valid_project_two"); // isComplete: false, isPaid: false
     }
 
     @Test
@@ -44,7 +46,68 @@ public class ProjectTest {
         assertNotEquals(validProject.getProgressString(), "Incomplete");
     }
 
+    @Test
+    public void test_getProjectProgress() {
+        assertEquals(validProject.getProgress(), true);
+        assertEquals(validProjectTwo.getProgress(), false);
+    }
 
+    @Test
+    public void test_setProjectProgress() {
+        Project testProject = new Project("test"); // isComplete: false
+        assertEquals(testProject.getProgress(), false);
+        testProject.setProgress(true);
+        assertEquals(testProject.getProgress(), true);
+    }
+
+    @Test
+    public void test_getProjectPaymentString() {
+        assertEquals(validProject.getPaymentString(), "Paid");
+        assertNotEquals(validProject.getPaymentString(), "Unpaid");
+    }
+
+    @Test
+    public void test_getProjectPayment() {
+        assertEquals(validProject.getPayment(), true);
+        assertEquals(validProjectTwo.getPayment(), false);
+    }
+
+    @Test
+    public void test_setProjectPayment() {
+        Project testProject = new Project("test"); // isPaid: false
+        assertEquals(testProject.getPayment(), false);
+        testProject.setPayment(true);
+        assertEquals(testProject.getPayment(), true);
+    }
+
+    @Test
+    public void test_getProjectDeadlineString() {
+        assertEquals(validProject.getDeadlineString(), "01 Apr 2025 2359");
+    }
+
+    @Test
+    public void test_getProjectDeadline() {
+        LocalDateTime deadline = Project.dateTimeStringToLocalDateTime("01 Apr 2025 2359");
+        assertEquals(validProject.getDeadline(), deadline);
+    }
+
+    @Test
+    public void test_setProjectDeadline() {
+        Project testProject = new Project("test");
+        assertNotEquals(testProject.getDeadlineString(), "01 Jan 1970 0001");
+        testProject.setDeadline(Project.dateTimeStringToLocalDateTime("01 Jan 1970 0001"));
+        assertEquals(testProject.getDeadlineString(), "01 Jan 1970 0001");
+    }
+
+    @Test
+    public void test_toString() {
+        String expectedString = '[' + validProject.getTagName()
+                + " | Deadline: " + validProject.getDeadlineString() + "H | "
+                + validProject.getProgressString()
+                + " | " + validProject.getPaymentString() + ']';
+        assertEquals(validProject.toString(), expectedString);
+        assertNotEquals(validProject.toString(), validProjectTwo.toString());
+    }
 
     @Test
     public void test_isValidProjectTagName() {
