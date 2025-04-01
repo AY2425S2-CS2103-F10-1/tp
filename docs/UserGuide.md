@@ -95,7 +95,14 @@ A person can have any number of tags (including 0).
 The email address is optional. You can choose to leave it blank if you prefer not to provide it.
 </div>
 
-* Name can only contain alphanumeric characters, spaces, a max of 40 characters and should not be blank.
+* When specifying a name, please ensure it follows these rules:
+  * **Allowed Characters:**
+    * Alphanumeric characters (A-Z, a-z, 0-9)
+    * Special characters: -, _, ., /
+    * Maximum length: 40 characters
+  * **Not Allowed Characters:**
+    * Prefix commands (n/, p/, e/, t/, project/, d/, pay/, prog/) are NOT allowed
+    * Any other special characters outside the allowed list
 * Phone numbers should be exactly 8 digits long, beginning with either 6, 8 or 9.
 * Email address must be in a valid format (i.e. username@domain.com), without spaces.
 * Tags/Projects can only contain alphanumeric characters with underscore and hyphens, and be between 1 and 20 characters long.
@@ -104,6 +111,7 @@ Examples:
 * `add n/Sarah Lee p/91233215`
 * `add n/John Doe p/98765432 e/johnd@example.com`
 * `add n/Betsy Crowe e/betsycrowe@example.com p/92345678 t/friend project/betsy_project`
+
 
   ![result for 'find alex david'](images/addContactResult.jpg)
 
@@ -114,6 +122,16 @@ Edits an existing person in ArtHive.
 Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL]`
 
 * Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
+* When specifying a name, please ensure it follows these rules:
+    * **Allowed Characters:**
+        * Alphanumeric characters (A-Z, a-z, 0-9)
+        * Special characters: -, _, ., /
+        * Maximum length: 40 characters
+    * **Not Allowed Characters:**
+        * Prefix commands (n/, p/, e/, t/, project/, d/, pay/, prog/) are NOT allowed
+        * Any other special characters outside the allowed list
+* Phone numbers should be exactly 8 digits long, beginning with either 6, 8 or 9.
+* Email address must be in a valid format (i.e. username@domain.com), without spaces.
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 
@@ -138,6 +156,8 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 Examples:
 * `find John` returns `john` and `John Doe`
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
+
+
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
 ### Locating persons by number: `find`
@@ -154,6 +174,8 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 Examples:
 * `find 87438807` returns `Alex Yeoh`
 * `find 87438807 99272758` returns `Alex Yeoh`, `Bernice Yu` <br>
+
+
   ![result for 'find 87438807 99272758'](images/find87438807_99272758Result.png)
 
 ### Deleting a person : `delete`
@@ -164,13 +186,17 @@ Deletes the specified contact in the current displayed contact list from ArtHive
 
 * Deletes the contact at the specified `INDEX` **or** with the specified `PHONE_NUMBER`.
 * The `INDEX` refers to the index number shown in the displayed contact list and **must be a positive integer** (1, 2, 3, …).
-* The `PHONE_NUMBER` must be an exact 8-digit phone number and must belong to a contact in the current displayed contact list.
+* The `PHONE_NUMBER` must be an exact 8-digit phone number beginning with either 6, 8 or 9 and must belong to a contact in the current displayed contact list. 
 * **One and only one** of `INDEX` or `p/PHONE_NUMBER` must be provided. 
 
 **Examples:**
 * `list` followed by `delete 2` deletes the 2nd contact in ArtHive.
+
+
   ![result for 'delete 2'](images/DeleteByIndexResult.png)
 * `list` followed by `delete p/93210283` deletes the contact with phone number 93210283.
+
+
   ![result for 'delete p/93210283'](images/DeleteByPhoneNumberResult.png)
 * `find Betsy` followed by `delete 1` deletes the 1st contact in the results of the `find` command.
 
@@ -183,6 +209,7 @@ Format: `tag p/PHONE (t/TAG | project/PROJECT) [t/TAG]…​ [project/PROJECT]�
 
 * Adds one or more Tags/Projects to the person specified by `PHONE`.
 * In each use of this command, there must be at least one Tag or Project specified.
+* The `PHONE` must be an exact 8-digit phone number beginning with either 6, 8 or 9 and must belong to a contact.
 * The existing Tags/Projects of the person will not be removed i.e adding of tags is cumulative.
 * Tags/Projects can only contain alphanumeric characters with underscore and hyphens, and be between 1 and 20 characters long.
 * Projects will have a default values of "Incomplete", "Unpaid", and a deadline set 1 day after creation. Modifications can be made using the `setstatus` command.
@@ -190,6 +217,8 @@ Format: `tag p/PHONE (t/TAG | project/PROJECT) [t/TAG]…​ [project/PROJECT]�
 Examples:
 *  `tag p/81234567 t/friend` Adds a Tag `friend` to the person who has the phone number `81234567`.
 *  `tag p/91234567 t/friend project/friend-project` Adds the Tag`friend` and Project `friend-project` to the person who has the phone number `91234567`.
+
+
    ![tag](images/tagAdded.png)
 
 
@@ -200,6 +229,7 @@ Deletes a Tag and/or a Project from an existing person in ArtHive.
 Format: `untag p/PHONE (t/TAG | project/PROJECT) [t/TAG]…​ [project/PROJECT]…​`
 
 * Removes one or more Tags/Projects from the person specified by `PHONE`, if it exists.
+* The `PHONE` must be an exact 8-digit phone number beginning with either 6, 8 or 9 and must belong to a contact.
 * In each use of this command, there must be at least one Tag or Project specified.
 * Tags/Projects can only contain alphanumeric characters with underscore and hyphens, and be between 1 and 20 characters long.
 * Untagging a Tag/Project from a person deletes the Tag/Project forever.
@@ -207,7 +237,8 @@ Format: `untag p/PHONE (t/TAG | project/PROJECT) [t/TAG]…​ [project/PROJECT]
 Examples:
 *  Person A with phone number `81234567` has no tags. `untag p/81234567 t/friend` returns an error message as the Tag does not exist.
 *  Person B with phone number `91234567` has 1 Tag `friend` and 1 Project `friend-project`. `untag p/91234567 project/friend-project` removes the Project `friend-project` only.
-   ![untag](images/tagRemoved.png)
+  
+![untag](images/tagRemoved.png)
 
 
 ### Saving the data : `save`
@@ -265,6 +296,8 @@ Format: `switchcontact p/PHONE`
 * If the current preferred contact method is phone, it will switch to email, provided the contact contains an email.
 * phone is the default preferred contact method when a contact is created.
 * If the contact does not have an email, the preferred contact method will remain as phone.
+* The `PHONE` must be an exact 8-digit phone number beginning with either 6, 8 or 9 and must belong to a contact.
+
 
 Examples:
 
